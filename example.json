@@ -1,0 +1,17 @@
+{
+	"Jobs": [
+	{
+		"Name": "Test 1",
+		"Command": "echo",
+		"Args": ["Test 1"],
+		"Schedule": "*/5 * * * *"
+	},
+	{
+		"Name": "derpy echo",
+		"Command": "echo",
+		"Args": ["Test 2"],
+		"Schedule": "*/3 * * * *"
+	}
+]
+}
+				
