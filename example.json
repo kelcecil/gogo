@@ -1,17 +1,15 @@
 {
 	"Jobs": [
 	{
-		"Name": "Test 1",
+		"Name": "Every five minutes",
 		"Command": "echo",
-		"Args": ["Test 1"],
+		"Args": ["Five"],
 		"Schedule": "*/5 * * * *"
 	},
 	{
-		"Name": "derpy echo",
+		"Name": "Every seven minutes",
 		"Command": "echo",
-		"Args": ["Test 2"],
-		"Schedule": "*/3 * * * *"
-	}
-]
+		"Args": ["Seven"],
+		"Schedule": "*/7 * * * *"
+	}]
 }
-				

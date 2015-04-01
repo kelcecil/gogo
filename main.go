@@ -20,7 +20,7 @@ func main() {
 	}
 	fmt.Println(jobs)
 	for {
-		timeUntilNextJob, _ := prepExecution(jobs, signals)
+		timeUntilNextJob := checkAndRun(jobs, signals)
 		done := make(chan bool, 1)
 		go func() {
 			for {
@@ -76,15 +76,15 @@ func waitForProcessCompletion(signals chan os.Signal, command string, args []str
 	}
 }
 
-func prepExecution(jbs Jobs, signals chan os.Signal) (time.Duration, error) {
+func checkAndRun(jbs Jobs, signals chan os.Signal) time.Duration {
 	jobs := jbs.Sorted()
 	if time.Now().Before(jobs[0].NextTime) {
-		return jobs[0].NextTime.Sub(time.Now()), nil
+		return jobs[0].NextTime.Sub(time.Now())
 	}
 	fmt.Println("Running job " + jobs[0].Name)
 	waitForProcessCompletion(signals, jobs[0].Command, jobs[0].Args)
 	jobs[0].NextTime = jobs[0].Expression.Next(time.Now())
-	return jobs.Sorted()[0].NextTime.Sub(time.Now()), nil
+	return jobs.Sorted()[0].NextTime.Sub(time.Now())
 }
 
 func initializeJobs() (Jobs, error) {
@@ -99,6 +99,7 @@ func initializeJobs() (Jobs, error) {
 	}
 	for i := range jbs {
 		jbs[i].Expression = cronexpr.MustParse(jbs[i].Schedule)
+		jbs[i].NextTime = jbs[i].Expression.Next(time.Now())
 	}
 	return jbs, nil
 }
