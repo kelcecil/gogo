@@ -5,6 +5,7 @@ import (
 	"flag"
 	"fmt"
 	"github.com/gorhill/cronexpr"
+	"math"
 	"os"
 	"os/exec"
 	"os/signal"
@@ -51,8 +52,7 @@ func waitForProcessCompletion(signals chan os.Signal, command string, args []str
 	execute.Stderr = os.Stderr
 	execute.Start()
 	proc := execute.Process
-	var exit bool
-	exit = false
+	exit := false
 	go func() {
 		done <- execute.Wait()
 	}()
@@ -84,7 +84,11 @@ func checkAndRun(jbs Jobs, signals chan os.Signal) time.Duration {
 	fmt.Println("Running job " + jobs[0].Name)
 	waitForProcessCompletion(signals, jobs[0].Command, jobs[0].Args)
 	jobs[0].NextTime = jobs[0].Expression.Next(time.Now())
-	return jobs.Sorted()[0].NextTime.Sub(time.Now())
+	jobs = jobs.Sorted()
+	fmt.Println("The next job \"" + jobs[0].Name + "\" will run at time: " + jobs[0].NextTime.String())
+	timeUntilExecution := math.Ceil(jobs[0].NextTime.Sub(time.Now()).Minutes())
+	fmt.Printf("Next execution in ~%.0f minutes\n", timeUntilExecution)
+	return jobs[0].NextTime.Sub(time.Now())
 }
 
 func initializeJobs() (Jobs, error) {
