@@ -4,13 +4,14 @@ import (
 	"errors"
 	"flag"
 	"fmt"
-	"github.com/gorhill/cronexpr"
 	"math"
 	"os"
 	"os/exec"
 	"os/signal"
 	"syscall"
 	"time"
+
+	"github.com/gorhill/cronexpr"
 )
 
 func main() {
@@ -18,6 +19,7 @@ func main() {
 	jobs, err := initializeJobs()
 	if err != nil {
 		fmt.Println("initializeJobs: " + err.Error())
+		os.Exit(1)
 	}
 	fmt.Println(jobs)
 	for {
@@ -94,7 +96,7 @@ func checkAndRun(jbs Jobs, signals chan os.Signal) time.Duration {
 func initializeJobs() (Jobs, error) {
 	file := flag.String("jobfile", "", "Path to json file containing jobs.")
 	flag.Parse()
-	if !flag.Parsed() || file == nil {
+	if !flag.Parsed() || *file == "" {
 		return nil, errors.New("Failed to parse filename for jobs.")
 	}
 	jbs, err := loadJobFile(*file)
