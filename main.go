@@ -12,9 +12,11 @@ import (
 	"time"
 
 	"github.com/gorhill/cronexpr"
+	reaper "github.com/ramr/go-reaper"
 )
 
 func main() {
+	go reaper.Reap()
 	signals := createSignalChannel()
 	jobs, err := initializeJobs()
 	if err != nil {
